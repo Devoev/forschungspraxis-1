@@ -1,6 +1,5 @@
-from typing import Callable
-
 import numpy as nd
+from functools import wraps
 
 
 def arg_as_array(i=0):

@@ -7,7 +7,7 @@ import numpy.typing
 from numpy.typing import ArrayLike
 from scipy import constants as const
 
-from util.arg_as_array import arg_as_array
+from util.array import arg_as_array
 
 l_z: Final[float] = 300e-3
 I: Final[float] = 16
