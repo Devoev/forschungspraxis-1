@@ -9,13 +9,14 @@ def arg_as_array(i=0):
     :return: The modified function.
     """
 
-    def _to_array(fun):
-        def call(*args, **kwargs):
+    def _arg_as_array(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
             res = list(args)
             res[i] = nd.asarray(args[i])
             res = tuple(res)
-            return fun(*res, **kwargs)
+            return func(*res, **kwargs)
 
-        return call
+        return wrapper
 
-    return _to_array
+    return _arg_as_array

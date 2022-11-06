@@ -1,4 +1,5 @@
 import sys
+from functools import wraps
 
 import gmsh
 
@@ -12,11 +13,13 @@ def model(name: str, dim: int = 3, show_gui: bool = False):
     """
 
     def _model(func):
-        def call(*args, **kwargs):
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
             gmsh.initialize()
             gmsh.model.add(name)
 
-            func(*args, **kwargs)
+            res = func(*args, **kwargs)
 
             gmsh.model.occ.synchronize()
             gmsh.model.mesh.generate(dim)
@@ -25,5 +28,7 @@ def model(name: str, dim: int = 3, show_gui: bool = False):
                 gmsh.fltk.run()
 
             gmsh.finalize()
-        return call
+            return res
+
+        return wrapper
     return _model
