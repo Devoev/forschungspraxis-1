@@ -8,7 +8,7 @@ from util.gmsh import model
 gm = gmsh.model.occ
 
 
-@model("coaxial_cable", show_gui=True)
+@model(name="coaxial_cable", dim=2, show_gui=True)
 def cable() -> Tuple[int, int, int]:
     """
     Creates a 2D cross-section of the coaxial_cable.
