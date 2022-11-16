@@ -8,7 +8,7 @@ from util.gmsh import model
 gm = gmsh.model.occ
 
 
-@model(name="coaxial_cable", dim=2, show_gui=True)
+@model(name="coaxial_cable", dim=2, show_gui=False)
 def cable() -> Tuple[int, int, int]:
     """
     Creates a 2D cross-section of the coaxial_cable.
@@ -30,7 +30,8 @@ def cable() -> Tuple[int, int, int]:
     surf2 = gm.add_plane_surface([loop2, loop1])
 
     # Create physical groups
+    gmsh.model.occ.synchronize()
     wire: int = gmsh.model.add_physical_group(2, [surf1], name="WIRE")
     shell: int = gmsh.model.add_physical_group(2, [surf2], name="SHELL")
-    gnd: int = gmsh.model.add_physical_group(1, [circ2], name="GND")
+    gnd: int = gmsh.model.add_physical_group(1, [loop2], name="GND")
     return wire, shell, gnd
