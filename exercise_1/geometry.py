@@ -1,11 +1,14 @@
 from typing import Tuple
 
 import gmsh
+import numpy as np
+import numpy.typing
 
 from exercise_1.constants import l_z, r1, r2
 from util.gmsh import model
 
 gm = gmsh.model.occ
+msh = gmsh.model.mesh
 
 
 @model(name="coaxial_cable", dim=2, show_gui=False)
@@ -35,3 +38,19 @@ def cable() -> Tuple[int, int, int]:
     shell: int = gmsh.model.add_physical_group(2, [surf2], name="SHELL")
     gnd: int = gmsh.model.add_physical_group(1, [loop2], name="GND")
     return wire, shell, gnd
+
+
+def node_coords(dim=-1, tag=-1) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Returns the coordinates of the nodes of the mesh.
+    :return The x,y,z coordinates.
+    """
+
+    node_tags, nodes = msh.get_nodes_for_physical_group(dim, tag)
+    num_nodes = len(node_tags)
+
+    i = np.arange(0, num_nodes)
+    x = nodes[3 * i]
+    y = nodes[3 * i + 1]
+    z = nodes[3 * i + 2]
+    return x, y, z
