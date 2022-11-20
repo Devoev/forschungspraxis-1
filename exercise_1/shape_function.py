@@ -1,11 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Tuple
 
 import numpy as np
 import numpy.linalg as la
-from numpy._typing import ArrayLike
 
-from util.array import arg_as_array
+from util.model import Point2D
 
 
 @dataclass
@@ -22,7 +20,7 @@ class ShapeFunction:
         return (self.a + self.b * x + self.c * y) / (2 * self.S)
 
     @staticmethod
-    def of_points(p_i: Tuple[float, float], p_j: Tuple[float, float], p_k: Tuple[float, float]):
+    def of_points(p_i: Point2D, p_j: Point2D, p_k: Point2D):
         """Creates the shape function at the triangle with corner points p_i, p_j and p_k"""
 
         if len(p_i) != 2 or len(p_j) != 2 or len(p_k) != 2:
