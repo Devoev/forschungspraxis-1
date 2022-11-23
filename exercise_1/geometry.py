@@ -1,4 +1,4 @@
-from typing import Tuple, Dict
+from typing import Tuple, Dict, List
 
 import gmsh
 import numpy as np
@@ -78,6 +78,7 @@ def node_coords(dim=-1, tag=-1) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 def element_node_tags(element_type: int, tag=-1) -> Dict[int, np.ndarray]:
     """An element-node tag dict.
+
     :param element_type: The type of elements to store in the dict.
     :param tag: The tag of elements to get.
     """
@@ -87,8 +88,18 @@ def element_node_tags(element_type: int, tag=-1) -> Dict[int, np.ndarray]:
     return dict(zip(tags, node_tags))
 
 
-def element_node_coords(element_type: int, tag=-1):
-    """TODO: Not working as intended."""
-    return {k: tuple(map(
-        lambda e: node_coords(tag=e)[0], v
-    )) for k, v in element_node_tags(element_type, tag).items()}
+def element_node_coords(element_type: int, tag=-1) -> Dict[int, List[np.ndarray]]:
+    """An element-tag to node coords dict.
+
+    :param element_type: The type of elements to store in the dict.
+    :param tag: The tag of elements to get.
+    """
+
+    element_tags, node_tags = msh.get_elements_by_type(element_type, tag)
+    node_tags = np.array_split(node_tags, len(node_tags) / 3)
+    coords: List[List[np.ndarray]] = list()
+
+    for tags in node_tags:
+        coords.append([msh.get_node(t)[0] for t in tags])
+
+    return dict(zip(element_tags, coords))

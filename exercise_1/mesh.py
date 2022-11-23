@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 
+import gmsh
 import numpy as np
+
+msh = gmsh.model.mesh
 
 
 @dataclass
@@ -72,3 +75,10 @@ class Mesh:
     def edge_to_node(self):
         # Associate edges and their respective nodes.
         return np.unique(np.sort(self.all_edges), axis=0)
+
+    @staticmethod
+    def create():
+        """Creates an instance of a Mesh object."""
+        node_tag, node, _ = msh.get_nodes()
+        element_types, element_tags, node_tags_elements = msh.get_elements()
+        return Mesh(node_tag, node, element_types, element_tags, node_tags_elements)

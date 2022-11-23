@@ -31,12 +31,17 @@ class ShapeFunction:
     def of_coords(x_i: float, y_i: float, x_j: float, y_j: float, x_k: float, y_k: float):
         """Creates the shape function at the triangle (x_i, y_i), (x_j, y_j), (x_k, y_k)."""
 
-        b = np.array([x_j - x_k, y_j - y_k])
-        h = np.array([x_j + x_k, y_j + y_k]) / 2 - np.array([x_i, y_i])
-
         return ShapeFunction(
             a=x_j * y_k - x_k * y_j,
             b=y_j - y_k,
             c=x_k - x_j,
-            S=la.norm(b) * la.norm(h) / 2
+            S=abs((x_j-x_i)*(y_k-y_i) - (y_j-y_i)*(x_k-x_i)) / 2
         )
+
+    @staticmethod
+    def area(p_i: Point2D, p_j: Point2D, p_k: Point2D):
+        ax = p_j[0] - p_i[0]
+        ay = p_j[1] - p_i[1]
+        bx = p_k[0] - p_i[0]
+        by = p_k[1] - p_i[1]
+        return 0.5*abs(ax*by - ay*bx)
