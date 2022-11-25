@@ -18,6 +18,7 @@ msh = gmsh.model.mesh
 def cable() -> Tuple[int, int, int]:
     """
     Creates a 2D cross-section of the coaxial_cable.
+
     :return: The group tags for the wire, shell and ground.
     """
 
@@ -119,3 +120,16 @@ def triangle_node_coords(tag=-1) -> Dict[int, Tuple[Point2D, Point2D, Point2D]]:
 def element_areas():
     """A list with the areas of the triangle elements."""
     return [ShapeFunction.area(x[0], x[1], x[2]) for x in triangle_node_coords().values()]
+
+
+def reluctivity(wire: int, shell: int):
+    """A list with the reluctivity values of the triangle elements.
+
+    :param wire: The tag of the wire physical group.
+    :param shell: The tag of the shell physical group.
+    """
+
+    # TODO: use entity_in_physical_group function in jupyter notebook
+    elements_wire = msh.get_elements(tag=wire)
+    elements_shell = msh.get_elements(tag=shell)
+    return elements_wire, elements_shell
