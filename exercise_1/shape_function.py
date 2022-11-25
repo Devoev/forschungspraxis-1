@@ -35,11 +35,12 @@ class ShapeFunction:
             a=x_j * y_k - x_k * y_j,
             b=y_j - y_k,
             c=x_k - x_j,
-            S=abs((x_j-x_i)*(y_k-y_i) - (y_j-y_i)*(x_k-x_i)) / 2
+            S=ShapeFunction.area((x_i, y_i), (x_j, y_j), (x_k, y_k))
         )
 
     @staticmethod
     def area(p_i: Point2D, p_j: Point2D, p_k: Point2D):
+        """Computes the area of a triangle with the corner points p_i, p_j and p_k."""
         ax = p_j[0] - p_i[0]
         ay = p_j[1] - p_i[1]
         bx = p_k[0] - p_i[0]
