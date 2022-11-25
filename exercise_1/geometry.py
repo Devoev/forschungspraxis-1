@@ -6,7 +6,9 @@ import numpy.typing
 from matplotlib import pyplot as plt
 
 from exercise_1.constants import l_z, r1, r2
+from exercise_1.shape_function import ShapeFunction
 from util.gmsh import model
+from util.model import Point2D
 
 gm = gmsh.model.occ
 msh = gmsh.model.mesh
@@ -103,3 +105,17 @@ def element_node_coords(element_type: int, tag=-1) -> Dict[int, List[np.ndarray]
         coords.append([msh.get_node(t)[0] for t in tags])
 
     return dict(zip(element_tags, coords))
+
+
+def triangle_node_coords(tag=-1) -> Dict[int, Tuple[Point2D, Point2D, Point2D]]:
+    """A triangle-tag to node coords dict. Uses the element_node_coords function with element_type=2.
+
+    :param tag: The tag of elements to get.
+    """
+    res = element_node_coords(2, tag)
+    return {k: [(x[0], x[1]) for x in v] for (k, v) in res.items()}
+
+
+def element_areas():
+    """A list with the areas of the triangle elements."""
+    return [ShapeFunction.area(x[0], x[1], x[2]) for x in triangle_node_coords().values()]
