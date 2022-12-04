@@ -1,3 +1,5 @@
+from typing import Tuple, List
+
 import gmsh
 import numpy as np
 from matplotlib import pyplot as plt
@@ -13,6 +15,12 @@ msh = gmsh.model.mesh
 if __name__ == '__main__':
     cable()
     mesh = Mesh.create()
-    res = element_node_coords(2)
-    element_areas = [ShapeFunction.area(x[0], x[1], x[2]) for x in res.values()]
-    print(element_areas)
+    # res = element_node_coords(2)
+    # print(res)
+    # print(res.keys())
+    # element_areas = [ShapeFunction.area(x[0], x[1], x[2]) for x in res.values()]
+    # print(element_areas)
+    # print(mesh.elem_to_node)
+    # print(element_node_tags(2))
+    # print(msh.get_nodes_for_physical_group(2, 2))
+    print(type(mesh.edges[0]))
