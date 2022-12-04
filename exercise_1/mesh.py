@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 import gmsh
 import numpy as np
@@ -50,6 +50,11 @@ class Mesh:
     def ind_elements(self) -> np.ndarray:
         """The indices of triangle elements."""
         return np.where(self.elementTypes == 2)[0]
+
+    @property
+    def elem_tags(self) -> np.ndarray:
+        """The tags of all triangle elements."""
+        return self.element_tags[self.ind_elements[0]]
 
     @property
     def elem_nodes(self) -> np.ndarray:

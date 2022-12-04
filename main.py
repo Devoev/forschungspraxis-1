@@ -14,5 +14,6 @@ msh = gmsh.model.mesh
 if __name__ == '__main__':
     wire, shell, gnd = cable()
     rel = reluctivity(wire, shell)
-    print(rel)
     mesh = Mesh.create()
+    print(len(mesh.elem_tags))
+    print(len(list(element_node_tags(2).keys())))
