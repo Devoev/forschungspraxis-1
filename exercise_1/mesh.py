@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
 import gmsh
 import numpy as np
@@ -69,6 +69,12 @@ class Mesh:
         return int(len(self.elem_nodes) / 3)
 
     @property
+    def elems(self) -> Dict[int, np.ndarray]:
+        """A element tag-node tag dict."""
+        node_tags = np.array_split(self.elem_nodes, self.num_elements)
+        return dict(zip(self.elem_tags, node_tags))
+
+    @property
     def elem_to_node(self) -> np.ndarray:
         """A matrix of elements. Each row contains the node tags of the element vertices."""
 
@@ -101,7 +107,9 @@ class Mesh:
 
         elem = self.elem_to_node
         nodes = msh.get_nodes_for_physical_group(2, tag)[0]
-        # TODO: Fix zero values.
+        # TODO: Fix nodes that are in no group.
+        # print(elem[8])
+        # print(nodes)
         return [set(e) <= set(nodes) for e in elem]
 
     @staticmethod
