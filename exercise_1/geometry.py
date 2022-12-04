@@ -5,7 +5,8 @@ import numpy as np
 import numpy.typing
 from matplotlib import pyplot as plt
 
-from exercise_1.constants import l_z, r1, r2
+from exercise_1.constants import l_z, r1, r2, mu_s, mu_w
+from exercise_1.mesh import Mesh
 from exercise_1.shape_function import ShapeFunction
 from util.gmsh import model
 from util.model import Point2D
@@ -122,14 +123,14 @@ def element_areas():
     return [ShapeFunction.area(x[0], x[1], x[2]) for x in triangle_node_coords().values()]
 
 
-def reluctivity(wire: int, shell: int):
+def reluctivity(wire: int, shell: int) -> List[float]:
     """A list with the reluctivity values of the triangle elements.
 
     :param wire: The tag of the wire physical group.
     :param shell: The tag of the shell physical group.
     """
 
-    # TODO: use entity_in_physical_group function in jupyter notebook
-    elements_wire = msh.get_elements(tag=wire)
-    elements_shell = msh.get_elements(tag=shell)
-    return elements_wire, elements_shell
+    mesh = Mesh.create()
+    elem_wire = mesh.elem_in_group(wire)
+    elem_shell = mesh.elem_in_group(shell)
+    return np.array(elem_wire) * mu_w + np.array(elem_shell) * mu_s

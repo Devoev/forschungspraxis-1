@@ -13,7 +13,6 @@ msh = gmsh.model.mesh
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     wire, shell, gnd = cable()
-    elw, els = reluctivity(wire, shell)
-    print(elw)
-    print(els)
+    rel = reluctivity(wire, shell)
+    print(rel)
     mesh = Mesh.create()

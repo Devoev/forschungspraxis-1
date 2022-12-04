@@ -88,6 +88,17 @@ class Mesh:
         Duplicate elements are removed and edges are sorted."""
         return np.unique(np.sort(self.edges), axis=0)
 
+    def elem_in_group(self, tag: int) -> List[bool]:
+        """A list of booleans to indicate, whether the element is in the group or not.
+
+        :param tag: The tag of the physical group.
+        """
+
+        elem = self.elem_to_node
+        nodes = msh.get_nodes_for_physical_group(2, tag)[0]
+        # TODO: Fix zero values.
+        return [set(e) <= set(nodes) for e in elem]
+
     @staticmethod
     def create():
         """Creates an instance of a Mesh object."""
