@@ -15,7 +15,8 @@ class Mesh:
     node_data: np.ndarray
     elementTypes: np.ndarray
     element_tags: np.ndarray
-    nodeTags_elements: np.ndarray
+    node_tags_elements: np.ndarray
+    node_tags_groups: np.ndarray
 
     @property
     def num_node(self) -> int:
@@ -61,7 +62,7 @@ class Mesh:
         """A vector of all nodes forming a triangle element.
         Shape: (e11,e12,e13,e21,e22,e23,...)
         """
-        return np.array(self.nodeTags_elements[self.ind_elements[0]])
+        return np.array(self.node_tags_elements[self.ind_elements[0]])
 
     @property
     def num_elements(self) -> int:
@@ -110,11 +111,15 @@ class Mesh:
         return [set(e) <= set(nodes) for e in self.elem_to_node]
 
     @staticmethod
-    def create():
+    def create(dim: int = 2):
         """Creates an instance of a Mesh object."""
         node_tag, node, _ = msh.get_nodes()
         element_types, element_tags, node_tags_elements = msh.get_elements()
-        return Mesh(node_tag, node, element_types, element_tags, node_tags_elements)
+        groups = gmsh.model.get_physical_groups(dim)
+        node_tags_groups = np.zeros(len(node_tag), 2)
+        for i, _ in enumerate(groups):
+            node_tags_groups[i] = msh.get_nodes_for_physical_group(dim, i)
+        return Mesh(node_tag, node, element_types, element_tags, node_tags_elements, node_tags_groups)
 
 
 def mat_nodes() -> np.ndarray:

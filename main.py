@@ -13,6 +13,9 @@ msh = gmsh.model.mesh
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     wire, shell, gnd = cable()
-    rel = reluctivity(wire, shell)
+    res = gmsh.model.mesh.get_nodes_for_physical_group(2, wire)
     mesh = Mesh.create()
-    print(rel)
+    print(mesh.node_tags_groups)
+    # rel = reluctivity(wire, shell)
+    # mesh = Mesh.create()
+    # print(rel)
