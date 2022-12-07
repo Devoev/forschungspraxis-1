@@ -4,6 +4,7 @@ from typing import List, Dict, Tuple
 import gmsh
 import numpy as np
 
+from exercise_1.constants import mu_w, mu_s
 from exercise_1.shape_function import ShapeFunction
 from util.model import Point2D
 
@@ -112,14 +113,14 @@ class Mesh:
         Duplicate elements are removed and edges are sorted."""
         return np.unique(np.sort(self.edges), axis=0)
 
-    def elem_in_group(self, tag: int) -> List[bool]:
+    def elem_in_group(self, tag: int) -> np.ndarray:
         """A list of booleans to indicate, whether the element is in the group or not.
 
         :param tag: The tag of the physical group minus 1.
         """
 
         nodes = self.nodes_in_group(tag)
-        return [set(e) <= set(nodes) for e in self.elem_to_node]
+        return np.asarray([set(e) <= set(nodes) for e in self.elem_to_node])
 
     @property
     def elem_areas(self):
@@ -129,6 +130,11 @@ class Mesh:
             x, y, z = self.node_coords[nodes]
             areas[i] = ShapeFunction.area(x, y, z)
         return areas
+
+    @property
+    def reluctivity(self) -> np.ndarray:
+        """A vector with reluctivity values."""
+        return self.elem_in_group(0) * mu_s + self.elem_in_group(1) * mu_w
 
     @staticmethod
     def create(dim: int = 2):

@@ -1,6 +1,6 @@
 import gmsh
 
-from exercise_1.geometry import cable
+from exercise_1.geometry import cable, reluctivity
 from exercise_1.mesh import Mesh
 
 msh = gmsh.model.mesh
@@ -9,7 +9,4 @@ msh = gmsh.model.mesh
 if __name__ == '__main__':
     wire, shell, gnd = cable()
     mesh = Mesh.create()
-    print(mesh.elem_areas)
-    # rel = reluctivity(wire, shell)
-    # mesh = Mesh.create()
-    # print(rel)
+    rel = reluctivity(wire, shell)
