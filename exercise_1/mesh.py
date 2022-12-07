@@ -51,6 +51,10 @@ class Mesh:
         """A node tag-coord dict."""
         return dict(zip(self.node_tags, self.node_coords))
 
+    def nodes_in_group(self, tag: int) -> np.ndarray:
+        """The nodes in the given physical group tag-1."""
+        return np.where(self.node_tags_groups[:, tag - 1])[0]
+
     @property
     def ind_elements(self) -> np.ndarray:
         """The indices of triangle elements."""
@@ -110,8 +114,7 @@ class Mesh:
         :param tag: The tag of the physical group.
         """
 
-        # TODO: Remove gmsh call
-        nodes = msh.get_nodes_for_physical_group(2, tag)[0] - 1
+        nodes = self.nodes_in_group(tag)
         return [set(e) <= set(nodes) for e in self.elem_to_node]
 
     @staticmethod
