@@ -4,6 +4,7 @@ from typing import List, Dict, Tuple
 import gmsh
 import numpy as np
 
+from exercise_1.shape_function import ShapeFunction
 from util.model import Point2D
 
 msh = gmsh.model.mesh
@@ -119,6 +120,15 @@ class Mesh:
 
         nodes = self.nodes_in_group(tag)
         return [set(e) <= set(nodes) for e in self.elem_to_node]
+
+    @property
+    def elem_areas(self):
+        """A vector of areas for the triangle elements."""
+        areas = np.zeros(self.num_elements)
+        for i, nodes in enumerate(self.elem_to_node):
+            x, y, z = self.node_coords[nodes]
+            areas[i] = ShapeFunction.area(x, y, z)
+        return areas
 
     @staticmethod
     def create(dim: int = 2):
