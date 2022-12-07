@@ -105,6 +105,7 @@ class Mesh:
         :param tag: The tag of the physical group.
         """
 
+        # TODO: Remove gmsh call
         nodes = msh.get_nodes_for_physical_group(2, tag)[0] - 1
         return [set(e) <= set(nodes) for e in self.elem_to_node]
 
