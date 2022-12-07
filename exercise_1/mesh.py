@@ -11,6 +11,10 @@ msh = gmsh.model.mesh
 
 @dataclass
 class Mesh:
+    """An object for handling the mesh elements and nodes.
+
+    node_tags_group: A matrix of size (N,G). Indicates, whether the node is included in the physical group or not.
+    """
     node_tag_data: np.ndarray
     node_data: np.ndarray
     elementTypes: np.ndarray
@@ -116,78 +120,9 @@ class Mesh:
         node_tag, node, _ = msh.get_nodes()
         element_types, element_tags, node_tags_elements = msh.get_elements()
         groups = gmsh.model.get_physical_groups(dim)
-        node_tags_groups = np.zeros(len(node_tag), 2)
-        for i, _ in enumerate(groups):
-            node_tags_groups[i] = msh.get_nodes_for_physical_group(dim, i)
+        node_tags_groups = np.zeros((len(node_tag), 2))
+        for i, group in enumerate(groups):
+            _, tag = group
+            nodes, _ = msh.get_nodes_for_physical_group(dim, tag)
+            node_tags_groups[nodes - 1, i] = 1
         return Mesh(node_tag, node, element_types, element_tags, node_tags_elements, node_tags_groups)
-
-
-def mat_nodes() -> np.ndarray:
-    """ Function to create a matrix mat_nodes containing all coordinates of the nodes in the mesh msh """
-
-    # Extract the data of all nodes in the mesh
-    nodes_mesh = gmsh.model.mesh.get_nodes(dim=-1, tag=-1, includeBoundary=False, returnParametricCoord=True)
-
-    # Create a matrix mat_nodes containing all coordinates of the nodes in the mesh
-    num_nodes = int(len(nodes_mesh[0]))
-    mat_nodes = np.zeros((num_nodes, 3))
-
-    for i in range(0, num_nodes, 1):
-        mat_nodes[i, 0] = nodes_mesh[1][3 * i]
-        mat_nodes[i, 1] = nodes_mesh[1][3 * i + 1]
-        mat_nodes[i, 2] = nodes_mesh[1][3 * i + 2]
-
-    return mat_nodes
-
-
-def mat_tri() -> np.ndarray:
-    """ Function to create the matrix mat_tri containing the indices of all nodes of a triangle from mat_nodes in msh"""
-
-    # Extract the data of all triangles in the mesh
-    tri_mesh = gmsh.model.mesh.getElementsByType(2, tag=-1, task=0, numTasks=1)
-
-    # Creating a matrix connecting node indices in mat_nodes to triangles
-    num_tri = int(len(tri_mesh[0]))
-    mat_tri = np.zeros((num_tri, 3))
-
-    # Assign the indices of the nodes to the triangles
-    for i in range(0, num_tri, 1):
-        mat_tri[i, 0] = tri_mesh[1][3 * i] - 1
-        mat_tri[i, 1] = tri_mesh[1][3 * i + 1] - 1
-        mat_tri[i, 2] = tri_mesh[1][3 * i + 2] - 1
-
-    return mat_tri
-
-
-def tri_to_ph2d() -> np.ndarray:
-    """ Function for creating a vector mapping which triangle belongs to which physical group in 2D """
-
-    # Create mat_tri
-    _mat_tri = mat_tri()
-
-    # Create the "empty" vector
-    tri_to_ph_2d = np.zeros(_mat_tri.shape[0])
-
-    # Extract all 2D physical groups and store their tags in l_ph_groups_2d
-    l_ph_groups_2d = []
-    for phgroup in gmsh.model.getPhysicalGroups(dim=2):
-        l_ph_groups_2d.append(phgroup[1])
-
-    # Assign the indices of all triangles in mat_triangles to a physical group
-    for g in l_ph_groups_2d:
-
-        # Create a set containing the tags of all nodes from physical group g (Decrease the value of every tag by one
-        # because gmash starts counting from 1 and not zero)
-        nodes_g = gmsh.model.mesh.getNodesForPhysicalGroup(2, g)[0]
-        for i in range(0, len(nodes_g), 1):
-            nodes_g[i] -= 1
-        nodes_g = set(nodes_g)
-
-        # Assign all correct triangles to the ph group g by comparing the nodes of the triangle to the nodes in g
-        for i in range(0, _mat_tri.shape[0], 1):
-
-            setnodes = {_mat_tri[i][0], _mat_tri[i][1], _mat_tri[i][2]}
-            if setnodes.intersection(nodes_g) == setnodes:
-                tri_to_ph_2d[i] = g
-
-    return tri_to_ph_2d
