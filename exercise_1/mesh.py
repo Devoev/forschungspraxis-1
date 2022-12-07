@@ -52,7 +52,10 @@ class Mesh:
         return dict(zip(self.node_tags, self.node_coords))
 
     def nodes_in_group(self, tag: int) -> np.ndarray:
-        """The nodes in the given physical group tag-1."""
+        """The nodes in the given physical group.
+
+        :param tag: The tag of the physical group minus 1.
+        """
         return np.where(self.node_tags_groups[:, tag - 1])[0]
 
     @property
@@ -111,7 +114,7 @@ class Mesh:
     def elem_in_group(self, tag: int) -> List[bool]:
         """A list of booleans to indicate, whether the element is in the group or not.
 
-        :param tag: The tag of the physical group.
+        :param tag: The tag of the physical group minus 1.
         """
 
         nodes = self.nodes_in_group(tag)
