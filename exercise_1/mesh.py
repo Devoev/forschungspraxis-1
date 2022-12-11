@@ -4,8 +4,6 @@ from typing import List, Dict, Tuple
 import gmsh
 import numpy as np
 
-from exercise_1.constants import mu_w, mu_s
-from exercise_1.shape_function import ShapeFunction
 from util.model import Point2D
 
 msh = gmsh.model.mesh
@@ -122,19 +120,50 @@ class Mesh:
         nodes = self.nodes_in_group(tag)
         return np.asarray([set(e) <= set(nodes) for e in self.elem_to_node])
 
+    @staticmethod
+    def elem_area(p_i: Point2D, p_j: Point2D, p_k: Point2D):
+        """Computes the area of a triangle with the corner points p_i, p_j and p_k."""
+        ax = p_j[0] - p_i[0]
+        ay = p_j[1] - p_i[1]
+        bx = p_k[0] - p_i[0]
+        by = p_k[1] - p_i[1]
+        return 0.5 * abs(ax * by - ay * bx)
+
     @property
     def elem_areas(self):
         """A vector of areas for the triangle elements."""
         areas = np.zeros(self.num_elements)
         for i, nodes in enumerate(self.elem_to_node):
             x, y, z = self.node_coords[nodes]
-            areas[i] = ShapeFunction.area(x, y, z)
+            areas[i] = self.elem_area(x, y, z)
         return areas
 
+    @staticmethod
+    def coeffs_of(p_j: Point2D, p_k: Point2D) -> Tuple[float, float, float]:
+        """The coefficients for a shape function."""
+        x_j, y_j = p_j
+        x_k, y_k = p_k
+        a: float = x_j * y_k - x_k * y_j
+        b: float = y_j - y_k
+        c: float = x_k - x_j
+        return a, b, c
+
     @property
-    def reluctivity(self) -> np.ndarray:
-        """A vector with reluctivity values."""
-        return self.elem_in_group(0) * mu_s + self.elem_in_group(1) * mu_w
+    def coeffs(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """A tuple of (E,3) matrices with the coefficients a,b,c for the shape functions."""
+        a = np.zeros([self.num_elements, 3])
+        b = np.zeros([self.num_elements, 3])
+        c = np.zeros([self.num_elements, 3])
+        for i, nodes in enumerate(self.elem_to_node):
+            x, y, z = self.node_coords[nodes]
+            # TODO: Correct order?
+            a1, b1, c1 = Mesh.coeffs_of(x, y)
+            a2, b2, c2 = Mesh.coeffs_of(x, z)
+            a3, b3, c3 = Mesh.coeffs_of(y, z)
+            a[i, :] = np.array([a1, a2, a3])
+            b[i, :] = np.array([b1, b2, b3])
+            c[i, :] = np.array([c1, c2, c3])
+        return a, b, c
 
     @staticmethod
     def create(dim: int = 2):
