@@ -65,7 +65,7 @@ class Mesh:
 
     @property
     def elem_tags(self) -> np.ndarray:
-        """The tags of all triangle elements."""
+        """The tags of all triangle elements. **Not** necessarily starting from zero."""
         return self.element_tags[self.ind_elements[0]]
 
     @property
