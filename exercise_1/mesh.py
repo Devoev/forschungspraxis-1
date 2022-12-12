@@ -82,9 +82,8 @@ class Mesh:
         return int(len(self.elem_nodes) / 3)
 
     @property
-    @deprecated("Use elems instead.")
     def elems_dict(self) -> Dict[int, np.ndarray]:
-        """A element tag-node tag dict."""
+        """**DEPRECATED** A element tag-node tag dict."""
         node_tags = np.array_split(self.elem_nodes, self.num_elems)
         return dict(zip(self.elem_tags, node_tags))
 
