@@ -3,6 +3,7 @@ from typing import List, Dict, Tuple
 
 import gmsh
 import numpy as np
+from IPython.core.hooks import deprecated
 
 from util.model import Point2D
 
@@ -81,13 +82,14 @@ class Mesh:
         return int(len(self.elem_nodes) / 3)
 
     @property
-    def elems(self) -> Dict[int, np.ndarray]:
+    @deprecated("Use elems instead.")
+    def elems_dict(self) -> Dict[int, np.ndarray]:
         """A element tag-node tag dict."""
         node_tags = np.array_split(self.elem_nodes, self.num_elems)
         return dict(zip(self.elem_tags, node_tags))
 
     @property
-    def elem_to_node(self) -> np.ndarray:
+    def elems(self) -> np.ndarray:
         """A matrix of elements. Each row contains the node tags of the element vertices."""
 
         # Associate elements (triangles) and their respective nodes.
@@ -101,9 +103,9 @@ class Mesh:
     @property
     def edges(self) -> np.ndarray:
         """A matrix of edges. Each row contains the start and end node tags."""
-        return np.r_[self.elem_to_node[:, [0, 1]],
-                     self.elem_to_node[:, [1, 2]],
-                     self.elem_to_node[:, [0, 2]]]
+        return np.r_[self.elems[:, [0, 1]],
+                     self.elems[:, [1, 2]],
+                     self.elems[:, [0, 2]]]
 
     @property
     def edge_to_node(self) -> np.ndarray:
@@ -118,7 +120,7 @@ class Mesh:
         """
 
         nodes = self.nodes_in_group(tag)
-        return np.asarray([set(e) <= set(nodes) for e in self.elem_to_node])
+        return np.asarray([set(e) <= set(nodes) for e in self.elems])
 
     @staticmethod
     def elem_area(p_i: Point2D, p_j: Point2D, p_k: Point2D):
@@ -133,7 +135,7 @@ class Mesh:
     def elem_areas(self):
         """A vector of areas for the triangle elements."""
         areas = np.zeros(self.num_elems)
-        for i, nodes in enumerate(self.elem_to_node):
+        for i, nodes in enumerate(self.elems):
             x, y, z = self.node_coords[nodes]
             areas[i] = self.elem_area(x, y, z)
         return areas
@@ -154,7 +156,7 @@ class Mesh:
         a = np.zeros([self.num_elems, 3])
         b = np.zeros([self.num_elems, 3])
         c = np.zeros([self.num_elems, 3])
-        for i, nodes in enumerate(self.elem_to_node):
+        for i, nodes in enumerate(self.elems):
             n1, n2, n3 = self.node_coords[np.sort(nodes)]
             # TODO: Correct order?
             a1, b1, c1 = Mesh.coeffs_of(n2, n3)  # n1
