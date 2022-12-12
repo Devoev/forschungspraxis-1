@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.sparse import coo_matrix, spmatrix, bmat
+from scipy.sparse import coo_matrix, spmatrix, bmat, csr_matrix
 
 from exercise_1.constants import l_z
 from exercise_1.geometry import Geo
@@ -16,8 +16,8 @@ def Knu(mesh: Mesh, geo: Geo) -> spmatrix:
     n = mesh.num_elems * 9  # Amount of matrix entries
     m = mesh.num_node  # Dimension of Knu matrix
     knu = np.zeros(n)  # Nonzero entries of the Knu matrix
-    rows = np.zeros(n)  # Row indices for the entries
-    cols = np.zeros(n)  # Column indices for the entries
+    rows = np.zeros(n, dtype='int')  # Row indices for the entries
+    cols = np.zeros(n, dtype='int')  # Column indices for the entries
 
     for elem in range(mesh.num_elems):
         idx = np.sort(mesh.elems[elem])
@@ -26,7 +26,7 @@ def Knu(mesh: Mesh, geo: Geo) -> spmatrix:
         cols[j:j+9] = np.reshape([idx, idx, idx], 9)
         knu[j:j+9] = Knu_e(elem, mesh, geo).flatten()
 
-    return coo_matrix((knu, (rows, cols)), shape=(m, m))
+    return csr_matrix((knu, (rows, cols)), shape=(m, m))
 
 
 def Knu_e(elem: int, mesh: Mesh, geo: Geo) -> np.ndarray:
