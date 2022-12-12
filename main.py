@@ -1,7 +1,10 @@
 import gmsh
+from matplotlib import pyplot as plt
+from matplotlib.pyplot import spy
 
 from exercise_1.coax_cable import cable
-from exercise_1.knu_matrix import Knu_e
+from exercise_1.geometry import Geo
+from exercise_1.knu_matrix import Knu_e, Knu
 from exercise_1.mesh import Mesh
 
 msh = gmsh.model.mesh
@@ -10,4 +13,8 @@ msh = gmsh.model.mesh
 if __name__ == '__main__':
     wire, shell, gnd = cable()
     mesh = Mesh.create()
-    print(Knu_e(1))
+    geo = Geo(mesh)
+    knu = Knu(mesh, geo)
+
+    spy(knu)
+    plt.show()
