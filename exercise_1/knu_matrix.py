@@ -7,15 +7,26 @@ from exercise_1.mesh import Mesh
 
 
 def Knu(mesh: Mesh, geo: Geo) -> spmatrix:
-    knu_e = np.array(mesh.num_elems)
-    print(knu_e)
-    for elem in range(knu_e.size):
-        # idx = np.sort(mesh.elems[elem])
-        knu_e[elem] = Knu_e(elem, mesh, geo)
+    """The stiffness matrix K.
 
-    knu = bmat(knu_e)
+    :param mesh: The mesh object.
+    :param geo: The geometry object.
+    """
 
-    return knu
+    n = mesh.num_elems * 9  # Amount of matrix entries
+    m = mesh.num_node  # Dimension of Knu matrix
+    knu = np.zeros(n)  # Nonzero entries of the Knu matrix
+    rows = np.zeros(n)  # Row indices for the entries
+    cols = np.zeros(n)  # Column indices for the entries
+
+    for elem in range(mesh.num_elems):
+        idx = np.sort(mesh.elems[elem])
+        j = elem*9
+        rows[j:j+9] = np.repeat(idx, 3)
+        cols[j:j+9] = np.reshape([idx, idx, idx], 9)
+        knu[j:j+9] = Knu_e(elem, mesh, geo).flatten()
+
+    return coo_matrix((knu, (rows, cols)), shape=(m, m))
 
 
 def Knu_e(elem: int, mesh: Mesh, geo: Geo) -> np.ndarray:
