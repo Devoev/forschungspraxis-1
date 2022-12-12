@@ -28,7 +28,7 @@ class Mesh:
         return int(len(self.node_data) / 3)
 
     @property
-    def node_coords(self) -> List[Point2D]:
+    def node_coords(self) -> np.ndarray:
         """The list of node coordinates."""
 
         node = np.reshape(self.node_data, (self.num_node, 3))
@@ -155,11 +155,11 @@ class Mesh:
         b = np.zeros([self.num_elements, 3])
         c = np.zeros([self.num_elements, 3])
         for i, nodes in enumerate(self.elem_to_node):
-            x, y, z = self.node_coords[nodes]
+            n1, n2, n3 = self.node_coords[np.sort(nodes)]
             # TODO: Correct order?
-            a1, b1, c1 = Mesh.coeffs_of(x, y)
-            a2, b2, c2 = Mesh.coeffs_of(x, z)
-            a3, b3, c3 = Mesh.coeffs_of(y, z)
+            a1, b1, c1 = Mesh.coeffs_of(n2, n3)  # n1
+            a2, b2, c2 = Mesh.coeffs_of(n1, n3)  # n2
+            a3, b3, c3 = Mesh.coeffs_of(n1, n2)  # n3
             a[i, :] = np.array([a1, a2, a3])
             b[i, :] = np.array([b1, b2, b3])
             c[i, :] = np.array([c1, c2, c3])
