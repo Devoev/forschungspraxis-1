@@ -76,14 +76,14 @@ class Mesh:
         return np.array(self.node_tags_elements[self.ind_elements[0]])
 
     @property
-    def num_elements(self) -> int:
+    def num_elems(self) -> int:
         """The number of elements."""
         return int(len(self.elem_nodes) / 3)
 
     @property
     def elems(self) -> Dict[int, np.ndarray]:
         """A element tag-node tag dict."""
-        node_tags = np.array_split(self.elem_nodes, self.num_elements)
+        node_tags = np.array_split(self.elem_nodes, self.num_elems)
         return dict(zip(self.elem_tags, node_tags))
 
     @property
@@ -93,8 +93,8 @@ class Mesh:
         # Associate elements (triangles) and their respective nodes.
         # Connection between elements and nodes.
         # Each line contains the indices of the contained nodes
-        elem_to_node = np.reshape(self.elem_nodes, (self.num_elements, 3)) - np.ones(
-            (self.num_elements, 1))
+        elem_to_node = np.reshape(self.elem_nodes, (self.num_elems, 3)) - np.ones(
+            (self.num_elems, 1))
         elem_to_node = elem_to_node.astype('int')
         return elem_to_node
 
@@ -132,7 +132,7 @@ class Mesh:
     @property
     def elem_areas(self):
         """A vector of areas for the triangle elements."""
-        areas = np.zeros(self.num_elements)
+        areas = np.zeros(self.num_elems)
         for i, nodes in enumerate(self.elem_to_node):
             x, y, z = self.node_coords[nodes]
             areas[i] = self.elem_area(x, y, z)
@@ -151,9 +151,9 @@ class Mesh:
     @property
     def coeffs(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """A tuple of (E,3) matrices with the coefficients a,b,c for the shape functions."""
-        a = np.zeros([self.num_elements, 3])
-        b = np.zeros([self.num_elements, 3])
-        c = np.zeros([self.num_elements, 3])
+        a = np.zeros([self.num_elems, 3])
+        b = np.zeros([self.num_elems, 3])
+        c = np.zeros([self.num_elems, 3])
         for i, nodes in enumerate(self.elem_to_node):
             n1, n2, n3 = self.node_coords[np.sort(nodes)]
             # TODO: Correct order?
