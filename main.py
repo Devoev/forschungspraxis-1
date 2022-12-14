@@ -5,6 +5,7 @@ from matplotlib.pyplot import spy
 from exercise_1.coax_cable import cable
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu_e, Knu
+from exercise_1.load_vector import j_grid, grid_current
 from exercise_1.mesh import Mesh
 
 msh = gmsh.model.mesh
@@ -18,3 +19,5 @@ if __name__ == '__main__':
 
     spy(knu)
     plt.show()
+    print(j_grid(mesh))
+    print(grid_current(mesh))
