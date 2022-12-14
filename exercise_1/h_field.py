@@ -7,6 +7,7 @@ import numpy.typing
 from numpy.typing import ArrayLike
 from scipy import constants as const
 
+from exercise_1.constants import r1, I, r2, mu_s, mu_w
 from util.array import arg_as_array
 
 
@@ -24,6 +25,34 @@ def h_field(r: ArrayLike) -> float:
 
     in1 = r <= r1
     return in1 * _h_field_1(r) + ~in1 * _h_field_2(r)
+
+
+@arg_as_array()
+def A_z(r: ArrayLike):
+    """
+    Analytic solution of magnetic vector potential
+
+    Parameters
+    ----------
+    r : np.ndarray
+        radius in [m]
+
+    Returns
+    -------
+    a_z : np.ndarray
+        Magnetic vector potential in [Tm]
+    """
+
+    @arg_as_array()
+    def A_z_i(r: ArrayLike):
+        return -I / (2 * np.pi) * (mu_w / 2 * (r ** 2 - r1 ** 2) / r1 ** 2 + mu_s * np.log(r1 / r2))
+
+    @arg_as_array()
+    def A_z_a(r: ArrayLike):
+        return -mu_s * I / (2 * np.pi) * np.log(r / r2)
+
+    condition = r < r1
+    return condition * A_z_i(r) + (~condition) * A_z_a(r)
 
 
 def plot_h_field():
