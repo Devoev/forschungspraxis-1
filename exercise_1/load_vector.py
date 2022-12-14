@@ -15,14 +15,11 @@ def j_grid(mesh: Mesh) -> np.ndarray:
 def grid_current(mesh: Mesh) -> csr_matrix:
     """A vector of grid currents inside the wire."""
     currents_e = j_grid(mesh) * mesh.elem_areas
-    idx = np.zeros(mesh.num_node * 3)
-    currents_n = np.zeros(mesh.num_node * 3)
+    idx = np.zeros(mesh.num_elems * 3)
+    currents_n = np.zeros(mesh.num_elems * 3)
 
     for j, nodes in enumerate(mesh.elems):
-        if j == mesh.num_node:
-            # TODO. Fix size
-            break
         idx[j * 3:(j + 1) * 3] = nodes
         currents_n[j * 3:(j + 1) * 3] = currents_e[j]
 
-    return csr_matrix((currents_n, (idx, np.zeros(mesh.num_node * 3))), shape=(mesh.num_node, 1))
+    return csr_matrix((currents_n, (idx, np.zeros(mesh.num_elems * 3))), shape=(mesh.num_node, 1))
