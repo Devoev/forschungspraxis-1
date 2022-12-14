@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse import csr_matrix, csr_array
 
 from exercise_1.constants import I, r1
 from exercise_1.mesh import Mesh
@@ -11,6 +12,17 @@ def j_grid(mesh: Mesh) -> np.ndarray:
     return idx * J0
 
 
-def grid_current(mesh: Mesh) -> np.ndarray:
+def grid_current(mesh: Mesh) -> csr_matrix:
     """A vector of grid currents inside the wire."""
-    return j_grid(mesh) * mesh.elem_areas
+    currents_e = j_grid(mesh) * mesh.elem_areas
+    idx = np.zeros(mesh.num_node * 3)
+    currents_n = np.zeros(mesh.num_node * 3)
+
+    for j, nodes in enumerate(mesh.elems):
+        if j == mesh.num_node:
+            # TODO. Fix size
+            break
+        idx[j * 3:(j + 1) * 3] = nodes
+        currents_n[j * 3:(j + 1) * 3] = currents_e[j]
+
+    return csr_matrix((currents_n, (idx, np.zeros(mesh.num_node * 3))), shape=(mesh.num_node, 1))

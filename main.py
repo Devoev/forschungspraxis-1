@@ -1,6 +1,7 @@
 import gmsh
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import spy
+import scipy.sparse.linalg as la
 
 from exercise_1.coax_cable import cable
 from exercise_1.geometry import Geo
@@ -15,9 +16,9 @@ if __name__ == '__main__':
     wire, shell, gnd = cable()
     mesh = Mesh.create()
     geo = Geo(mesh)
-    knu = Knu(mesh, geo)
 
-    spy(knu)
-    plt.show()
-    print(j_grid(mesh))
-    print(grid_current(mesh))
+    knu = Knu(mesh, geo)
+    b = grid_current(mesh)
+
+    a = la.spsolve(knu, b)
+    print(a)
