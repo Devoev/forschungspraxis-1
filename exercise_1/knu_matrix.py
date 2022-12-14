@@ -46,6 +46,7 @@ def Knu_e(elem: int, mesh: Mesh, geo: Geo) -> np.ndarray:
 
     for i in range(3):
         for j in range(3):
-            knu[i, j] = r * (b[i] * b[j] + c[i] * c[j]) / (4 * S * l_z)
+            if i != j:
+                knu[i, j] = r * (b[i] * b[j] + c[i] * c[j]) / (4 * S * l_z)
 
     return knu

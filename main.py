@@ -2,7 +2,8 @@ import gmsh
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import spy
-import scipy.sparse.linalg as la
+import scipy.sparse.linalg as las
+import numpy.linalg as la
 
 from exercise_1.coax_cable import cable
 from exercise_1.geometry import Geo
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     knu = Knu(mesh, geo)
     b = grid_current(mesh)
 
-    a = la.spsolve(knu, b)
+    a = las.spsolve(knu, b)
 
     r = np.zeros(mesh.num_node)
     for i, coord in enumerate(mesh.node_coords):
@@ -33,4 +34,6 @@ if __name__ == '__main__':
 
     # spy(knu)
     # plt.show()
-    print(a_ana)
+
+    error = la.norm(a_ana - a) / la.norm(a_ana)
+    print(f"Relative error between analytic und numerical solution: {error}")
