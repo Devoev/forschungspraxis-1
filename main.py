@@ -30,3 +30,7 @@ if __name__ == '__main__':
         r[i] = np.sqrt(x**2 + y**2)
 
     a_ana = A_z(r)
+
+    # spy(knu)
+    # plt.show()
+    print(a_ana)

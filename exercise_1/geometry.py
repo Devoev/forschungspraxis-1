@@ -16,4 +16,4 @@ class Geo:
     @property
     def reluctivity(self) -> np.ndarray:
         """A vector with reluctivity values."""
-        return self.mesh.elem_in_group(0) * mu_s + self.mesh.elem_in_group(1) * mu_w
+        return self.mesh.elem_in_group(0) / mu_s + self.mesh.elem_in_group(1) / mu_w
