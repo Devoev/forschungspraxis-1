@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 
 import numpy as np
+import numpy.linalg as la
 
 from exercise_1.constants import mu_s, mu_w, WIRE, SHELL
 from exercise_1.mesh import Mesh
-from exercise_1.shape_function import ShapeFunction
-
 
 @dataclass
 class Geo:
@@ -21,8 +20,4 @@ class Geo:
     @property
     def r(self) -> np.ndarray:
         """The radius values for all nodes of the mesh."""
-        r = np.zeros(self.mesh.num_node)
-        for i, coord in enumerate(self.mesh.node_coords):
-            x, y = coord
-            r[i] = np.sqrt(x ** 2 + y ** 2)
-        return r
+        return la.norm(self.mesh.node_coords, axis=1)
