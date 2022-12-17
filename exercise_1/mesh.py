@@ -3,7 +3,6 @@ from typing import List, Dict, Tuple
 
 import gmsh
 import numpy as np
-from IPython.core.hooks import deprecated
 
 from util.model import Point2D
 
@@ -39,7 +38,7 @@ class Mesh:
         return node
 
     @property
-    def node_tags(self) -> List[int]:
+    def node_tags(self) -> np.ndarray:
         """A list of node tags. Node tags of gmsh -1"""
         # ID of nodes
         node_tag = self.node_tag_data - np.ones(len(self.node_tag_data))

@@ -7,7 +7,7 @@ import numpy.linalg as la
 
 from exercise_1.coax_cable import cable
 from exercise_1.geometry import Geo
-from exercise_1.h_field import A_z
+from exercise_1.analytic import A_z, H_phi
 from exercise_1.knu_matrix import Knu_e, Knu
 from exercise_1.load_vector import j_grid, grid_current
 from exercise_1.mesh import Mesh
@@ -31,6 +31,7 @@ if __name__ == '__main__':
         r[i] = np.sqrt(x**2 + y**2)
 
     a_ana = A_z(r)
+    h_ana = H_phi(r)
 
     # spy(knu)
     # plt.show()
