@@ -1,11 +1,11 @@
-from typing import Tuple
+from typing import Tuple, List
 
 import gmsh
 import numpy as np
 from matplotlib import pyplot as plt
 
 from exercise_1.analytic import H_phi
-from exercise_1.constants import r1, r2
+from exercise_1.constants import r1, r2, WIRE, GND, SHELL
 from util.gmsh import model
 
 gm = gmsh.model.occ
@@ -13,11 +13,12 @@ msh = gmsh.model.mesh
 
 
 @model(name="coaxial_cable", dim=2, show_gui=False)
-def cable() -> Tuple[int, int, int]:
+def cable(tags: Tuple[int, int, int] = (WIRE, SHELL, GND)) -> Tuple[int, int, int]:
     """
     Creates a 2D cross-section of the coaxial_cable.
 
-    :return: The group tags for the wire, shell and ground.
+    :param tags: The group tags for the wire, shell and ground.
+    :return: The group tags.
     """
 
     # Inner and outer cable cross-section
@@ -36,9 +37,9 @@ def cable() -> Tuple[int, int, int]:
 
     # Create physical groups
     gmsh.model.occ.synchronize()
-    wire: int = gmsh.model.add_physical_group(2, [surf1], name="WIRE")
-    shell: int = gmsh.model.add_physical_group(2, [surf2], name="SHELL")
-    gnd: int = gmsh.model.add_physical_group(1, [loop2], name="GND")
+    wire: int = gmsh.model.add_physical_group(dim=2, tags=[surf1], tag=tags[0], name="WIRE")
+    shell: int = gmsh.model.add_physical_group(dim=2, tags=[surf2], tag=tags[1], name="SHELL")
+    gnd: int = gmsh.model.add_physical_group(dim=1, tags=[loop2], tag=tags[2], name="GND")
     return wire, shell, gnd
 
 

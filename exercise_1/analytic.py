@@ -7,12 +7,12 @@ import numpy.typing
 from numpy.typing import ArrayLike
 from scipy import constants as const
 
-from exercise_1.constants import r1, I, r2, mu_s, mu_w
+from exercise_1.constants import r1, I, r2, mu_s, mu_w, l_z
 from util.array import arg_as_array
 
 
 @arg_as_array()
-def H_phi(r):
+def H_phi(r: ArrayLike):
     """
     Analytic solution for the phi-component of the magnetic field of the coaxial cable.
 
@@ -21,11 +21,11 @@ def H_phi(r):
     """
 
     @arg_as_array()
-    def H_phi_i(r):
+    def H_phi_i(r: ArrayLike):
         return I / (2 * np.pi * r1 ** 2) * r
 
     @arg_as_array()
-    def H_phi_a(r):
+    def H_phi_a(r: ArrayLike):
         return I / (2 * np.pi * r)
 
     condition = r < r1
@@ -51,3 +51,8 @@ def A_z(r: ArrayLike):
 
     condition = r < r1
     return condition * A_z_i(r) + (~condition) * A_z_a(r)
+
+
+def W_mag() -> float:
+    """The magnetic energy of the coaxial cable."""
+    return I ** 2 * l_z * mu_w * (1 + 20 * mu_w * math.log(r2/r1)) / (16*np.pi)
