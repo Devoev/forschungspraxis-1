@@ -54,9 +54,9 @@ class Mesh:
     def nodes_in_group(self, tag: int) -> np.ndarray:
         """The nodes in the given physical group.
 
-        :param tag: The tag of the physical group minus 1.
+        :param tag: The tag of the physical group.
         """
-        return np.where(self.node_tags_groups[:, tag - 1])[0]
+        return np.where(self.node_tags_groups[:, tag])[0]
 
     @property
     def ind_elements(self) -> np.ndarray:
@@ -155,25 +155,29 @@ class Mesh:
         b = np.zeros([self.num_elems, 3])
         c = np.zeros([self.num_elems, 3])
         for i, nodes in enumerate(self.elems):
+            # Node indices
             n1, n2, n3 = self.node_coords[np.sort(nodes)]
-            # TODO: Correct order?
+
+            # a,b,c coefficients
             a1, b1, c1 = Mesh.coeffs_of(n2, n3)  # n1
             a2, b2, c2 = Mesh.coeffs_of(n1, n3)  # n2
             a3, b3, c3 = Mesh.coeffs_of(n1, n2)  # n3
+
+            # Set values of a,b,c vectors
             a[i, :] = np.array([a1, a2, a3])
             b[i, :] = np.array([b1, b2, b3])
             c[i, :] = np.array([c1, c2, c3])
         return a, b, c
 
     @staticmethod
-    def create(dim: int = 2):
+    def create():
         """Creates an instance of a Mesh object."""
         node_tag, node, _ = msh.get_nodes()
         element_types, element_tags, node_tags_elements = msh.get_elements()
-        groups = gmsh.model.get_physical_groups(dim)
-        node_tags_groups = np.zeros((len(node_tag), 2))
+        groups = gmsh.model.get_physical_groups()
+        node_tags_groups = np.zeros((len(node_tag), len(groups)))
         for i, group in enumerate(groups):
-            _, tag = group
+            dim, tag = group
             nodes, _ = msh.get_nodes_for_physical_group(dim, tag)
             node_tags_groups[nodes - 1, i] = 1
         return Mesh(node_tag, node, element_types, element_tags, node_tags_elements, node_tags_groups)

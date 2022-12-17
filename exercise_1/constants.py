@@ -10,6 +10,6 @@ mu_s: Final[float] = 5 * const.mu_0
 eps_s: Final[float] = const.epsilon_0
 sig_cu: Final[float] = 57.7e6
 
-WIRE: Final[int] = 0
-SHELL: Final[int] = 1
-GND: Final[int] = 2
+WIRE: Final[int] = 1
+SHELL: Final[int] = 2
+GND: Final[int] = 0

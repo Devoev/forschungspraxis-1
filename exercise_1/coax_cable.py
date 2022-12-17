@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 
 from exercise_1.analytic import H_phi
 from exercise_1.constants import r1, r2, WIRE, GND, SHELL
+from exercise_1.mesh import Mesh
 from util.gmsh import model
 
 gm = gmsh.model.occ
@@ -56,15 +57,21 @@ def plot_geometry():
     Plots the cable geometry and visualizes the physical groups.
     """
     wire, shell, gnd = cable()
-    xw, yw, zw = node_coords(2, wire)
-    xs, ys, zs = node_coords(2, shell)
-    xg, yg, _ = node_coords(1, gnd)
+    mesh = Mesh.create()
+    wire = mesh.nodes_in_group(wire)
+    shell = mesh.nodes_in_group(shell)
+    gnd = mesh.nodes_in_group(gnd)
+
+    coords_w = mesh.node_coords[wire]
+    coords_s = mesh.node_coords[shell]
+    coords_g = mesh.node_coords[gnd]
+    zeros = np.zeros(len(coords_s))
 
     # Creating plot
     ax = plt.axes(projection='3d')
-    ax.plot_trisurf(xw, yw, zw, color="blue")
-    ax.plot_trisurf(xs, ys, zs, color="green", alpha=0.5)
-    ax.plot(xg, yg, color="red")
+    ax.plot_trisurf(coords_w[:, 0], coords_w[:, 1], zeros, color="blue")
+    ax.plot_trisurf(coords_s[:, 0], coords_s[:, 1], zeros, color="green", alpha=0.5)
+    ax.plot(coords_g[:, 0], coords_g[:, 1], color="red")
 
     # show plot
     plt.show()

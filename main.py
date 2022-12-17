@@ -5,7 +5,8 @@ from matplotlib.pyplot import spy
 import scipy.sparse.linalg as las
 import numpy.linalg as la
 
-from exercise_1.coax_cable import cable
+from exercise_1.coax_cable import cable, plot_geometry
+from exercise_1.constants import GND, SHELL, WIRE
 from exercise_1.geometry import Geo
 from exercise_1.analytic import A_z, H_phi, W_mag
 from exercise_1.knu_matrix import Knu_e, Knu
@@ -24,7 +25,7 @@ if __name__ == '__main__':
     b = grid_current(mesh)
 
     # TODO: Boundary conditions!
-    a = las.spsolve(knu, b)
+    # a = las.spsolve(knu, b)
 
     r = np.zeros(mesh.num_node)
     for i, coord in enumerate(mesh.node_coords):
@@ -34,6 +35,8 @@ if __name__ == '__main__':
     a_ana = A_z(r)
     h_ana = H_phi(r)
     w_ana = W_mag()
+
+    plot_geometry()
 
     # spy(knu)
     # plt.show()
