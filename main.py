@@ -22,16 +22,15 @@ if __name__ == '__main__':
     mesh = Mesh.create()
     geo = Geo(mesh)
 
-    r = np.zeros(mesh.num_node)
-    for i, coord in enumerate(mesh.node_coords):
-        x, y = coord
-        r[i] = np.sqrt(x**2 + y**2)
-
+    r = np.sort(geo.r)
     a_ana = A_z(r)
     h_ana = H_phi(r)
     w_ana = W_mag()
 
     a = solve_ms(mesh, geo)
+    plt.plot(r, -np.sort(-a), 'r--')
+    plt.plot(r, a_ana, 'b--')
+    plt.show()
 
     error = la.norm(a_ana - a) / la.norm(a_ana)
     print(f"Relative error between analytic und numerical solution: {error}")
