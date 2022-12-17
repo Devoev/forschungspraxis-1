@@ -22,15 +22,22 @@ if __name__ == '__main__':
     mesh = Mesh.create()
     geo = Geo(mesh)
 
+    knu = Knu(mesh, geo)
+
     r = np.sort(geo.r)
     a_ana = A_z(r)
     h_ana = H_phi(r)
     w_ana = W_mag()
 
     a = solve_ms(mesh, geo)
-    plt.plot(r, -np.sort(-a), 'r--')
-    plt.plot(r, a_ana, 'b--')
-    plt.show()
+    w = 0.5*np.dot(a, knu*a)
+
+    # plt.plot(r, -np.sort(-a), 'r--')
+    # plt.plot(r, a_ana, 'b--')
+    # # plt.scatter(r, a_ana)
+    # # plt.scatter(r, a)
+    # plt.show()
 
     error = la.norm(a_ana - a) / la.norm(a_ana)
-    print(f"Relative error between analytic und numerical solution: {error}")
+    # print(f"Relative error between analytic und numerical solution: {error}")
+    print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}")

@@ -6,6 +6,7 @@ import numpy.linalg as la
 from exercise_1.constants import mu_s, mu_w, WIRE, SHELL
 from exercise_1.mesh import Mesh
 
+
 @dataclass
 class Geo:
     """An object for handling the geometry data."""
