@@ -38,6 +38,7 @@ if __name__ == '__main__':
     # # plt.scatter(r, a)
     # plt.show()
 
-    error = la.norm(a_ana - a) / la.norm(a_ana)
+    err_a = la.norm(a_ana - a) / la.norm(a_ana)
+    err_w = abs(w_ana - w)/w_ana
     # print(f"Relative error between analytic und numerical solution: {error}")
-    print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}")
+    print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err_w}.")

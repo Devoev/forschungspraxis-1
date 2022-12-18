@@ -55,4 +55,4 @@ def A_z(r: ArrayLike):
 
 def W_mag() -> float:
     """The magnetic energy of the coaxial cable."""
-    return I ** 2 * l_z * mu_w * (1 + 20 * mu_w * math.log(r2/r1)) / (16*np.pi)
+    return I ** 2 * l_z * mu_w * (1 + 20*math.log(r2/r1)) / (16*np.pi)
