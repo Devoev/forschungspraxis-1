@@ -156,11 +156,11 @@ class Mesh:
         c = np.zeros([self.num_elems, 3])
         for i, nodes in enumerate(self.elems):
             # Node indices
-            n1, n2, n3 = self.node_coords[np.sort(nodes)]
+            n1, n2, n3 = self.node_coords[nodes]
 
             # a,b,c coefficients
             a1, b1, c1 = Mesh.coeffs_of(n2, n3)  # n1
-            a2, b2, c2 = Mesh.coeffs_of(n1, n3)  # n2
+            a2, b2, c2 = Mesh.coeffs_of(n3, n1)  # n2
             a3, b3, c3 = Mesh.coeffs_of(n1, n2)  # n3
 
             # Set values of a,b,c vectors
