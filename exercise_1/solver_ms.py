@@ -7,7 +7,7 @@ from scipy.sparse import spmatrix
 from exercise_1.constants import GND
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu
-from exercise_1.load_vector import grid_current
+from exercise_1.load_vector import j_grid
 from exercise_1.mesh import Mesh
 
 
@@ -15,7 +15,7 @@ def solve_ms(mesh: Mesh, geo: Geo) -> np.ndarray:
     """Solves the magneto-static system Ka=j."""
 
     knu = Knu(mesh, geo)
-    j = grid_current(mesh)
+    j = j_grid(mesh)
     a = np.zeros(j.shape[0])
 
     idx = mesh.nodes_in_group(GND)

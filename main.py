@@ -10,7 +10,7 @@ from exercise_1.constants import GND, SHELL, WIRE, l_z
 from exercise_1.geometry import Geo
 from exercise_1.analytic import A_z, H_phi, W_mag
 from exercise_1.knu_matrix import Knu_e, Knu
-from exercise_1.load_vector import j_grid, grid_current
+from exercise_1.load_vector import j_grid_elems, j_grid
 from exercise_1.mesh import Mesh
 from exercise_1.solver_ms import solve_ms
 
@@ -42,8 +42,7 @@ if __name__ == '__main__':
 
     # spy(knu, markersize=1)
     # plt.show()
-    print(w_test)
     err_a = la.norm(a_ana - a) / la.norm(a_ana)
     err_w = abs(w_ana - w) / w_ana
-    # print(f"Relative error between analytic und numerical solution: {error}")
+    print(f"Relative error between analytic und numerical solution: {err_a}")
     print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err_w}.")
