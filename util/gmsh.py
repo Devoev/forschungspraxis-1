@@ -6,8 +6,8 @@ import gmsh
 
 DefaultOptions: Final[Dict[str, float]] = {
     # "General.Verbosity": 0,
-    "Mesh.MeshSizeFactor": 1,
-    # "Mesh.MshFileVersion": 2.2
+    "Mesh.MeshSizeFactor": 0.8,
+    "Mesh.MshFileVersion": 2.2
 }
 """The default options for gmsh initialization."""
 
