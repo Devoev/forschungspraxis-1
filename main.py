@@ -34,7 +34,7 @@ if __name__ == '__main__':
     a = solve_ms(mesh, geo)
     w = 0.5 * np.dot(a, knu * a)
 
-    plt.plot(r, a, 'r--')
+    plt.plot(r, a/l_z, 'r--')
     plt.plot(r, a_ana, 'b--')
     # plt.scatter(r, a_ana)
     # plt.scatter(r, a)

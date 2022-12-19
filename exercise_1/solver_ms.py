@@ -18,8 +18,8 @@ def solve_ms(mesh: Mesh, geo: Geo) -> np.ndarray:
     j = j_grid(mesh)
     a = np.zeros(j.shape[0])
 
-    idx = mesh.nodes_in_group(GND)
-    idx_dof = np.setdiff1d(mesh.node_tags, idx)
+    idx_dir = mesh.nodes_in_group(GND)  # Dirichlet (boundary) indices
+    idx_dof = np.setdiff1d(mesh.node_tags, idx_dir)  # DOF indices
 
     A, b = deflate(knu, j, idx_dof)
     x = las.spsolve(A, b)
