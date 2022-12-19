@@ -15,9 +15,9 @@ def j_grid_elems(mesh: Mesh) -> np.ndarray:
 
 def j_grid(mesh: Mesh) -> spmatrix:
     """A vector of size (N) of current densities inside the wire for each node."""
-    currents_e = j_grid_elems(mesh) * mesh.elem_areas  # I = J*A
+    currents_e = j_grid_elems(mesh) * mesh.elem_areas  # I = J*A (currents per elem)
     idx = np.zeros(mesh.num_elems * 3)
-    currents_n = np.zeros(mesh.num_elems * 3)
+    currents_n = np.zeros(mesh.num_elems * 3)  # currents per node
 
     for j, nodes in enumerate(mesh.elems):
         idx[j * 3:(j + 1) * 3] = nodes
