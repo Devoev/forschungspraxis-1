@@ -34,14 +34,15 @@ if __name__ == '__main__':
     a = solve_ms(mesh, geo)
     w = 0.5 * np.dot(a, knu * a)
 
-    # plt.plot(r, -np.sort(-a), 'r--')
-    # plt.plot(r, a_ana, 'b--')
-    # # plt.scatter(r, a_ana)
-    # # plt.scatter(r, a)
-    # plt.show()
+    plt.plot(r, a, 'r--')
+    plt.plot(r, a_ana, 'b--')
+    # plt.scatter(r, a_ana)
+    # plt.scatter(r, a)
+    plt.show()
 
     # spy(knu, markersize=1)
     # plt.show()
+
     err_a = la.norm(a_ana - a) / la.norm(a_ana)
     err_w = abs(w_ana - w) / w_ana
     print(f"Relative error between analytic und numerical solution: {err_a}")
