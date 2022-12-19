@@ -19,12 +19,11 @@ def Knu(mesh: Mesh, geo: Geo) -> spmatrix:
     rows = np.zeros(n, dtype='int')  # Row indices for the entries
     cols = np.zeros(n, dtype='int')  # Column indices for the entries
 
-    for elem in range(mesh.num_elems):
-        idx = np.sort(mesh.elems[elem])
-        j = elem*9
-        rows[j:j+9] = np.repeat(idx, 3)
-        cols[j:j+9] = np.reshape([idx, idx, idx], 9)
-        knu[j:j+9] = Knu_e(elem, mesh, geo).flatten()
+    for e in range(mesh.num_elems):
+        idx = mesh.elems[e]
+        rows[9*e:9*(e+1)] = np.repeat(idx, 3)
+        cols[9*e:9*(e+1)] = np.reshape([idx, idx, idx], 9)
+        knu[9*e:9*(e+1)] = Knu_e(e, mesh, geo).flatten()
 
     return csr_matrix((knu, (rows, cols)), shape=(m, m))
 
@@ -46,7 +45,6 @@ def Knu_e(elem: int, mesh: Mesh, geo: Geo) -> np.ndarray:
 
     for i in range(3):
         for j in range(3):
-            if i != j:
-                knu[i, j] = r * (b[i] * b[j] + c[i] * c[j]) / (4 * S * l_z)
+            knu[i, j] = r * (b[i] * b[j] + c[i] * c[j]) / (4 * S * l_z)
 
     return knu
