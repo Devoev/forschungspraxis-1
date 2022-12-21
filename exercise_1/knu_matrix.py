@@ -29,7 +29,7 @@ def Knu(mesh: Mesh, geo: Geo) -> spmatrix:
 
 
 def Knu_e(elem: int, mesh: Mesh, geo: Geo) -> np.ndarray:
-    """Computes the 3x3 matrix of entries for the stiffness matrix K.
+    """The local 3x3 stiffness matrix K..
 
     :param elem: The element tag for the shape functions.
     :param mesh: The mesh object.
