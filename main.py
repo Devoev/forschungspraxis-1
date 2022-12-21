@@ -8,6 +8,7 @@ from exercise_1.constants import l_z
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu
 from exercise_1.mesh import Mesh
+from exercise_1.mssolution import MSSolution
 from exercise_1.solver_ms import solve_ms
 
 msh = gmsh.model.mesh
@@ -27,7 +28,8 @@ if __name__ == '__main__':
 
     w_test = l_z ** 2 / 2 * a_ana @ knu @ a_ana  # Test if knu matrix gives the correct energy.
 
-    a = solve_ms(mesh, geo)
+    solution = MSSolution(mesh, geo)
+    a = solution.solve()
     w = 0.5 * np.dot(a, knu * a)
 
     # plt.plot(r, a/l_z, 'r--')
