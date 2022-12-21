@@ -12,7 +12,10 @@ from exercise_1.mesh import Mesh
 
 
 def solve_ms(mesh: Mesh, geo: Geo) -> np.ndarray:
-    """Solves the magneto-static system Ka=j."""
+    """Solves the magneto-static system Ka=j.
+
+    :returns: The solution for the magnetic vector potential on the nodes. Vector of size (N).
+    """
 
     knu = Knu(mesh, geo)
     j = j_grid(mesh)
