@@ -8,7 +8,7 @@ import scipy.sparse.linalg as las
 from exercise_1.constants import GND, l_z
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu
-from exercise_1.load_vector import j_grid
+from exercise_1.load_vector import j_grid, X
 from exercise_1.mesh import Mesh
 from exercise_1.solver_ms import inflate, deflate
 
@@ -28,18 +28,25 @@ class MSSolution:
         self.j = j_grid(self.mesh)
         self.a = np.zeros(self.j.shape[0])
 
+    @property
+    def idx_dir(self):
+        """The indices of dirichlet boundary nodes."""
+        return self.mesh.nodes_in_group(GND)
+
+    @property
+    def idx_dof(self):
+        """The indices for the degrees of freedom."""
+        return np.setdiff1d(self.mesh.node_tags, self.idx_dir)
+
     def solve(self) -> np.ndarray:
         """Solves the magneto-static system Ka=j.
 
         :returns: The solution for the magnetic vector potential in z-direction on the nodes. Vector of size (N).
         """
 
-        idx_dir = self.mesh.nodes_in_group(GND)  # Dirichlet (boundary) indices
-        idx_dof = np.setdiff1d(self.mesh.node_tags, idx_dir)  # DOF indices
-
-        A, b = deflate(self.knu, self.j, idx_dof)
-        x = las.spsolve(A, b)
-        return inflate(self.a, x, idx_dof)
+        A, b = deflate(self.knu, self.j, self.idx_dof)
+        x: np.ndarray = las.spsolve(A, b)
+        return inflate(self.a, x, self.idx_dof)
 
     @property
     def b(self) -> np.ndarray:
@@ -48,11 +55,14 @@ class MSSolution:
         S = self.mesh.elem_areas[:, None]
         _, b, c = self.mesh.coeffs
 
-        bx = np.sum(c * a_z / S, axis=1) / (2*l_z)
-        by = -np.sum(b * a_z / S, axis=1) / (2*l_z)
+        bx = np.sum(c * a_z / S, axis=1) / (2 * l_z)
+        by = -np.sum(b * a_z / S, axis=1) / (2 * l_z)
         return np.vstack([bx, by]).T
 
     @property
     def L(self) -> spmatrix:
-        """The inductance matrix L of size (N,1)."""
-        pass
+        """The inductance matrix L of size (1,1)."""
+        x = X(self.mesh)  # current distribution
+        A, b = deflate(self.knu, x, self.idx_dof)
+        y: np.ndarray = las.spsolve(A, b)
+        return x.T * inflate(self.a, y, self.idx_dof)

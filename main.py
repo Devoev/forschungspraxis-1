@@ -47,3 +47,4 @@ if __name__ == '__main__':
     print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err_w}.")
 
     b = solution.b
+    L = solution.L
