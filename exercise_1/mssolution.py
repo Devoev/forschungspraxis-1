@@ -3,6 +3,7 @@ from functools import cached_property
 
 import numpy as np
 import scipy.sparse.linalg as las
+from numpy import ndarray
 from scipy.sparse import spmatrix
 
 from exercise_1.constants import GND, l_z, I, eps_s, mu_s
@@ -41,6 +42,14 @@ class MSSolution:
     def j(self) -> spmatrix:
         """The grid current vector."""
         return self.X * I
+
+    @cached_property
+    def Q(self) -> ndarray:
+        """The charge vector."""
+        A, b = deflate(self.knu, self.X, self.idx_dof)
+        x: np.ndarray = las.spsolve(A, b)
+        Q = np.zeros(self.j.shape[0])
+        return inflate(Q, x, self.idx_dof)
 
     @property
     def idx_dir(self):
@@ -84,3 +93,8 @@ class MSSolution:
     def C(self) -> float:
         """The capacitance C."""
         return eps_s * mu_s / self.L
+
+    @cached_property
+    def R_hyst(self) -> float:
+        """The hysteresis resistance."""
+        return self.Q.T @ self.knu @ self.Q

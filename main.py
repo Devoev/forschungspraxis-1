@@ -48,3 +48,4 @@ if __name__ == '__main__':
 
     print(solution.L)
     print(solution.C)
+    print(solution.R_hyst)
