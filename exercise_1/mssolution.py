@@ -96,5 +96,8 @@ class MSSolution:
 
     @cached_property
     def R_hyst(self) -> float:
-        """The hysteresis resistance."""
-        return self.Q.T @ self.knu @ self.Q
+        """The hysteresis resistance.
+        TODO: implement khyst
+        """
+        khyst = 0
+        return self.Q @ khyst @ self.Q
