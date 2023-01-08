@@ -46,5 +46,5 @@ if __name__ == '__main__':
     print(f"Relative error between analytic und numerical solution: {err_a}")
     print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err_w}.")
 
-    b = solution.b
-    L = solution.L
+    print(solution.L)
+    print(solution.C)

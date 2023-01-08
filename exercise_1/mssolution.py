@@ -1,22 +1,24 @@
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Tuple
 
 import numpy as np
-from scipy.sparse import spmatrix
 import scipy.sparse.linalg as las
+from scipy.sparse import spmatrix
 
-from exercise_1.constants import GND, l_z, I
+from exercise_1.constants import GND, l_z, I, eps_s, mu_s
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu
-from exercise_1.load_vector import j_grid, X
+from exercise_1.load_vector import X
 from exercise_1.mesh import Mesh
 from exercise_1.solver_ms import inflate, deflate
 
 
 @dataclass
 class MSSolution:
-    """An object for solving the magneto-statics problem Ka=j and calculating post-processing quantities."""
+    """An object for solving the magneto-statics problem Ka=j and calculating post-processing quantities.
+
+    TODO: Add material parameters.
+    """
 
     mesh: Mesh
     geo: Geo
@@ -72,8 +74,13 @@ class MSSolution:
         return np.vstack([bx, by]).T
 
     @cached_property
-    def L(self) -> spmatrix:
-        """The inductance matrix L of size (1,1)."""
+    def L(self) -> float:
+        """The inductance L."""
         A, b = deflate(self.knu, self.X, self.idx_dof)
         y: np.ndarray = las.spsolve(A, b)
-        return self.X.T * inflate(self.a, y, self.idx_dof)
+        return (self.X.T * inflate(self.a, y, self.idx_dof))[0]
+
+    @cached_property
+    def C(self) -> float:
+        """The capacitance C."""
+        return eps_s * mu_s / self.L
