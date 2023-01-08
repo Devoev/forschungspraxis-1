@@ -1,4 +1,5 @@
 from typing import Final
+
 from scipy import constants as const
 
 l_z: Final[float] = 300e-3

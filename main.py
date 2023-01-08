@@ -1,6 +1,8 @@
 import gmsh
 import numpy as np
 import numpy.linalg as la
+from matplotlib import pyplot as plt
+from matplotlib.pyplot import loglog
 
 from exercise_1.analytic import A_z, H_phi, W_mag
 from exercise_1.coax_cable import cable
@@ -41,11 +43,10 @@ if __name__ == '__main__':
     # spy(knu, markersize=1)
     # plt.show()
 
-    err_a = la.norm(a_ana - a) / la.norm(a_ana)
-    err_w = abs(w_ana - w) / w_ana
-    print(f"Relative error between analytic und numerical solution: {err_a}")
-    print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err_w}.")
+    err = abs(w_ana - w) / w_ana
+    print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err}.")
 
-    print(solution.L)
-    print(solution.C)
-    print(solution.R_hyst)
+    freq = np.logspace(0, 5, 100)
+    z = [abs(solution.Z(f)) for f in freq]
+    loglog(freq, z)
+    plt.show()

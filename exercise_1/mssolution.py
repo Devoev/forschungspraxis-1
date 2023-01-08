@@ -3,10 +3,10 @@ from functools import cached_property
 
 import numpy as np
 import scipy.sparse.linalg as las
-from numpy import ndarray
+from numpy import ndarray, pi, sqrt
 from scipy.sparse import spmatrix
 
-from exercise_1.constants import GND, l_z, I, eps_s, mu_s
+from exercise_1.constants import GND, l_z, I, eps_s, mu_s, sig_cu, r1
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu
 from exercise_1.load_vector import X
@@ -95,9 +95,15 @@ class MSSolution:
         return eps_s * mu_s / self.L
 
     @cached_property
-    def R_hyst(self) -> float:
-        """The hysteresis resistance.
-        TODO: implement khyst
-        """
-        khyst = 0
-        return self.Q @ khyst @ self.Q
+    def R(self) -> float:
+        """The per-unit-length resistance R'."""
+        return 1 / (sig_cu * pi * r1**2)
+
+    def Z(self, f: float) -> float:
+        """The characteristic impedance for the given frequency."""
+        w = 2*pi*f
+        r = self.R
+        l = self.L / l_z
+        c = self.C / l_z
+        g = 1/r * (l_z**2)
+        return sqrt((r + w*l*1j) / (g + w*c*1j))
