@@ -100,10 +100,42 @@ class MSSolution:
         return 1 / (sig_cu * pi * r1**2)
 
     def Z(self, f: float) -> float:
-        """The characteristic impedance for the given frequency."""
+        """The impedance Z."""
         w = 2*pi*f
         r = self.R
         l = self.L / l_z
+        return r + w*l*1j
+
+    def Y(self, f: float):
+        """The admittance Y."""
+        w = 2 * pi * f
+        g = 1 / self.R * (l_z ** 2)
         c = self.C / l_z
-        g = 1/r * (l_z**2)
-        return sqrt((r + w*l*1j) / (g + w*c*1j))
+        return g + w*c*1j
+
+    def Z_char(self, f: float) -> float:
+        """The characteristic impedance for the given frequency."""
+        return sqrt(self.Z(f) / self.Y(f))
+
+    def beta(self, f: float) -> float:
+        """The propagation constant beta."""
+        return sqrt(self.Z(f) * self.Y(f))
+
+    def A(self, f: float) -> np.ndarray:
+        """The propagation matrix A."""
+        bl = self.beta(f) * l_z
+        Z = self.Z(f)
+        Y = self.Y(f)
+        return np.array([
+            [np.cosh(bl), -Z * np.sinh(bl)],
+            [-Y * np.sinh(bl), np.cosh(bl)]
+        ])
+
+    def B(self, f: float) -> np.ndarray:
+        """The admittance matrix B."""
+        bl = self.beta(f) * l_z
+        Y = self.Y(f)
+        return np.array([
+            [np.cosh(bl), -1],
+            [1, -np.cosh(bl)]
+        ]) * Y / np.sinh(bl)

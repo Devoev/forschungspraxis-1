@@ -47,6 +47,9 @@ if __name__ == '__main__':
     print(f"Analytic magnetic energy {w_ana} and numerical magnetic energy {w}. Relative error of {err}.")
 
     freq = np.logspace(0, 5, 100)
-    z = [abs(solution.Z(f)) for f in freq]
+    z = [abs(solution.Z_char(f)) for f in freq]
     loglog(freq, z)
     plt.show()
+
+    print(solution.A(1e3))
+    print(solution.B(1e3))
