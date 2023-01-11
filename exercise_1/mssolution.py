@@ -109,9 +109,8 @@ class MSSolution:
     def Y(self, f: float):
         """The admittance Y."""
         w = 2 * pi * f
-        g = 1 / self.R * (l_z ** 2)
         c = self.C / l_z
-        return g + w*c*1j
+        return w*c*1j
 
     def Z_char(self, f: float) -> float:
         """The characteristic impedance for the given frequency."""

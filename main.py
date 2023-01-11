@@ -53,3 +53,5 @@ if __name__ == '__main__':
 
     print(solution.A(1e3))
     print(solution.B(1e3))
+
+    print(np.sqrt(solution.L / solution.C))
