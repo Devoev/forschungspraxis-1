@@ -4,10 +4,11 @@ from typing import Final
 import matplotlib.pylab as plt
 import numpy as np
 import numpy.typing
+from numpy import pi
 from numpy.typing import ArrayLike
 from scipy import constants as const
 
-from exercise_1.constants import r1, I, r2, mu_s, mu_w, l_z
+from exercise_1.constants import r1, I, r2, mu_s, mu_w, l_z, eps_s
 from util.array import arg_as_array
 
 
@@ -55,4 +56,14 @@ def A_z(r: ArrayLike):
 
 def W_mag() -> float:
     """The magnetic energy of the coaxial cable."""
-    return I ** 2 * l_z * mu_w * (1 + 20*math.log(r2/r1)) / (16*np.pi)
+    return I ** 2 * l_z * mu_w * (1 + 20 * math.log(r2 / r1)) / (16 * np.pi)
+
+
+def L() -> float:
+    """The inductance of the coaxial cable."""
+    return 2 * W_mag() / (I ** 2)
+
+
+def C() -> float:
+    """The capacitance of the coaxial cable."""
+    return 2*pi * eps_s * l_z / np.log(r2/r1)

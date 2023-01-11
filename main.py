@@ -4,7 +4,7 @@ import numpy.linalg as la
 from matplotlib import pyplot as plt
 from matplotlib.pyplot import loglog
 
-from exercise_1.analytic import A_z, H_phi, W_mag
+from exercise_1.analytic import A_z, H_phi, W_mag, L
 from exercise_1.coax_cable import cable
 from exercise_1.constants import l_z
 from exercise_1.geometry import Geo
@@ -49,9 +49,10 @@ if __name__ == '__main__':
     freq = np.logspace(0, 5, 100)
     z = [abs(solution.Z_char(f)) for f in freq]
     loglog(freq, z)
-    plt.show()
+    # plt.show()
 
     print(solution.A(1e3))
     print(solution.B(1e3))
 
-    print(np.sqrt(solution.L / solution.C))
+    print(solution.L / l_z)
+    print(solution.C / l_z)

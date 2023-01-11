@@ -6,7 +6,8 @@ import scipy.sparse.linalg as las
 from numpy import ndarray, pi, sqrt
 from scipy.sparse import spmatrix
 
-from exercise_1.constants import GND, l_z, I, eps_s, mu_s, sig_cu, r1
+from exercise_1.analytic import C
+from exercise_1.constants import GND, l_z, I, eps_s, mu_s, sig_cu, r1, mu_w
 from exercise_1.geometry import Geo
 from exercise_1.knu_matrix import Knu
 from exercise_1.load_vector import X
@@ -92,7 +93,8 @@ class MSSolution:
     @cached_property
     def C(self) -> float:
         """The capacitance C."""
-        return eps_s * mu_s / self.L
+        return C()
+        return eps_s * mu_s / self.L * l_z**2 # TODO: Fix numerical value
 
     @cached_property
     def R(self) -> float:
